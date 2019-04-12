@@ -5,11 +5,12 @@ Author: Akira Wang
 # Import Dependencies
 from algorithms import *
 
-
 def main():
     """
     Main function.
     """
+    system('cls')
+
     human_piece = False
     while not human_piece: # Originally defined as '' so it should be None
         print("X goes first, and O goes second.")
@@ -37,6 +38,8 @@ def main():
         human(agent_piece, human_piece)
         agent(agent_piece, human_piece)
     
+    system('cls')
+
     if winner(BOARD, HUMAN):
         print("YOU WIN!")
         print_board(BOARD, agent_piece, human_piece)

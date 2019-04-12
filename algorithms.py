@@ -11,6 +11,8 @@ FILENAME: agent.py
 
 # Import libraries
 from math import inf
+from os import system
+from time import sleep
 
 # Global Variables
 BOARD = [
@@ -20,9 +22,9 @@ BOARD = [
 ]
 
 ACTIONS = {
-    1: [0, 0], 2: [0, 1], 3: [0, 2],
-    4: [1, 0], 5: [1, 1], 6: [1, 2],
-    7: [2, 0], 8: [2, 1], 9: [2, 2],
+    0: [0, 0], 1: [0, 1], 2: [0, 2],
+    3: [1, 0], 4: [1, 1], 5: [1, 2],
+    6: [2, 0], 7: [2, 1], 8: [2, 2],
 }
 
 HUMAN = -1
@@ -96,50 +98,45 @@ def apply_action(i, j, player):
     """
     if valid_action(i, j):
         BOARD[i][j] = player
-    
+        return True
+    else:
+        False
 
 def minimax(state, depth, player):
     """
     Minimax implementation.
     Returns: Max or Min for (row, col, score)
     """
-    if AGENT:
-        """
-        If AGENT score is set to -inf
-        """
-        maximise = [-1 , -1, -inf]
-        next_player = HUMAN
+    if player == AGENT:
+        maximise = [-1, -1, -inf]
     else:
-        """
-        Else HUMAN and score is set to +inf
-        """
         maximise = [-1, -1, +inf]
-        next_player = AGENT
-    
+
     if depth == 0 or game_over(state):
         score = eval(state)
         return [-1, -1, score]
-    
+
     for tile in blank_tiles(state):
         i, j = tile[0], tile[1]
         state[i][j] = player
-        score = minimax(state, depth - 1, next_player)
+        score = minimax(state, depth - 1, -player)
         state[i][j] = 0
         score[0], score[1] = i, j
 
-        if AGENT and score[2] > maximise[2]:
+        if player == AGENT:
             """
-            Update Max value
+            Max Value
             """
-            maximise = score 
-        else:
             if score[2] > maximise[2]:
-                """
-                Update Min value
-                """
+                maximise = score
+        else:
+            """
+            Min Value
+            """
+            if score[2] < maximise[2]:
                 maximise = score
 
-        return maximise
+    return maximise
 
 def print_board(state, agent_piece, human_piece):
     """
@@ -168,8 +165,11 @@ def agent(agent_piece, human_piece):
         # GAME OVER
         return None
 
-    print(f"Agent's Turn (Piece: {agent_piece})")
+    system('cls')
+
     print_board(BOARD, agent_piece, human_piece)
+    print(f"Agent's Turn (Piece: {agent_piece})")
+    
 
     """
     Recall that input is: state, depth, player
@@ -177,33 +177,36 @@ def agent(agent_piece, human_piece):
     move = minimax(BOARD, depth, AGENT)
     apply_action(move[0], move[1], AGENT)
 
+    sleep(0.5)
+
 def human(agent_piece, human_piece):
     """
     Human function to apply move.
-    Also allows the human to choose piece (X or O)
     Returns: None, just applies a move.
     """
     depth = len(blank_tiles(BOARD))
     if depth == 0 or game_over(BOARD):
         # GAME OVER
         return None
-        
+
+    system('cls')
+
     print_board(BOARD, agent_piece, human_piece)
     print(f"Your Turn (Piece: {human_piece})")
 
     while True:
-        action = input("Enter your action (1 - 9): ")
-        if action.isdigit() and int(action) in range(1, 9):
+        action = input("Enter your action (0 - 8): ")
+        if action.isdigit() and int(action) in range(9):
             action = int(action)
+            # This is probably a bad hotfix but it doesnt work 
+            # sometimes if its not like this hmmm
             try:
                 coord = ACTIONS[action]
-                apply_action(coord[0], coord[1], HUMAN)
-                break # god this is probably bad
+                if apply_action(coord[0], coord[1], HUMAN):
+                    break
+                else:
+                    print("Invalid Action. Try Again")
             except:
-                print("EXCEPT Invalid Action. Try Again")
+                print("Invalid Action. Try Again")
         else:
             print("Invalid Action. Try Again")
-
-        
-
-    
