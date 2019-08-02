@@ -15,7 +15,7 @@ def main():
     while not human_piece: # Originally defined as '' so it should be None
         print("X goes first, and O goes second.")
         choice = input("Choose X or O: ").upper()
-        if choice in 'XO':
+        if choice == 'X' or choice == 'O':
             human_piece = choice
             if choice == 'X':
                 agent_piece = 'O'
