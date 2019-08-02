@@ -13,7 +13,7 @@ def main():
 
     human_piece = False
     while not human_piece: # Originally defined as '' so it should be None
-        print("X goes first, and O goes second.")
+        print("ORDER: X goes first, and O goes second.")
         choice = input("Choose X or O: ").upper()
         if choice == 'X' or choice == 'O':
             human_piece = choice
@@ -23,7 +23,7 @@ def main():
                 agent_piece = 'X'
             print("Successful. Let's start the game!")
         else:
-            print("Invalid Piece. Try Again.")
+            print("Invalid Entry. Try Again.")
 
     if choice == 'O':
         """
